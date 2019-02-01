@@ -3,11 +3,31 @@ node_js:
   - "9"
 dist: trusty
 sudo: required
+services:
+  - docker
 branches:
   only:
   - master
 before_script:
-  - npm install -g @angular/cli
+  - npm install
 script:
-- ng lint
-- ng build --prod --base-href https://github.com/andi-di/data-inspector-ui
+  - npm run build
+  - git config --local user.name "travis-ci"
+  - git config --local user.email "christoph.birk@gmail.com"
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')}
+  - git tag $TRAVIS_TAG
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - docker build -t chris060986/data-inspector-ui:$TRAVIS_TAG .
+  - docker tag chris060986/data-inspector-ui:$TRAVIS_TAG chris060986/data-inspector-ui:latest
+  - docker push chris060986/data-inspector-ui:$TRAVIS_TAG
+  - docker push chris060986/data-inspector-ui:latest 
+
+before_deploy:
+  - cd dist
+  - zip -r data-inspector-ui-$TRAVIS_TAG.zip *
+  - cd ..
+deploy:
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  file: "dist/data-inspector-ui-$TRAVIS_TAG.zip"
+  skip_cleanup: true

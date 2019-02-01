@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  serviceBaseUrl: '/',
+  wsBaseUrl: 'ws://' + location.host + ':' +location.port
 };

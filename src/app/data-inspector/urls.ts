@@ -1,9 +1,7 @@
-const REST: string = "http://";
-const WS: string = "ws://";
-const baseUrl: string = 'localhost:3000/';
+import { environment } from './../../environments/environment';
 
 export const ServerURL = {
-  websocket: WS + baseUrl + 'websocket',
-  datatypes: REST + baseUrl + 'datatypes',
-  datastructure: REST + baseUrl + 'datastructures'
+  websocket: environment.wsBaseUrl + 'websocket',
+  datatypes: environment.serviceBaseUrl + 'datatypes',
+  datastructure: environment.serviceBaseUrl + 'datastructures'
 }
